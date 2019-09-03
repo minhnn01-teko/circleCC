@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'jacoco'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
@@ -21,6 +25,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+
+        unitTests {
+            all {
+                jacoco {
+                    includeNoLocationClasses = true
+                }
+            }
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -32,4 +48,50 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+jacoco {
+    toolVersion '0.8.4'
+}
+
+task jacocoTestReport(type: JacocoReport,
+        dependsOn: 'testDebugUnitTest') {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/*Test*.*',
+                      '**/AutoValue_*.*',
+                      '**/*JavascriptBridge.class',
+                      '**/R.class',
+                      '**/R$*.class',
+                      '**/Manifest*.*',
+                      'android/**/*.*',
+                      '**/BuildConfig.*',
+                      '**/*$ViewBinder*.*',
+                      '**/*$ViewInjector*.*',
+                      '**/Lambda$*.class',
+                      '**/Lambda.class',
+                      '**/*Lambda.class',
+                      '**/*Lambda*.class',
+                      '**/*$InjectAdapter.class',
+                      '**/*$ModuleAdapter.class',
+                      '**/*$ViewInjector*.class',
+                      '**/*_MembersInjector.class', //Dagger2 generated code
+                      '*/*_MembersInjector*.*', //Dagger2 generated code
+                      '**/*_*Factory*.*', //Dagger2 generated code
+                      '*/*Component*.*', //Dagger2 generated code
+                      '**/*Args*.*',
+                      '**/*Directions*.**',
+                      '**/*Lazy*.**',
+    ]
+    //Dagger2 generated code
+    def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/developDebug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([debugTree])
+    executionData.from = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec'
+    ])
 }
