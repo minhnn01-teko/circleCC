@@ -2,7 +2,7 @@ version: 2
 references:
   ## Workspace
   workspace: &workspace
-               ~/agent_app_android
+               ~/circleCC
 
   ## Docker image configurations
   android_config: &android_config
@@ -11,7 +11,7 @@ references:
       - image: circleci/android:api-29
     environment:
       JVM_OPTS: -Xmx3200m
-      CC_TEST_REPORTER_ID: 1de11a5a55172d037a73615b5b429462ad642d9b0d10e0a4e053fccc484e4056
+      CC_TEST_REPORTER_ID: c2821476d0c16fabc0291c8118851269c316444a81ba12cf2caf8cfb164b76a6
 
   ## Cache
   cache_key: &cache_key
@@ -29,7 +29,9 @@ references:
   download_dependencies: &download_dependencies
     run:
       name: Download Dependencies
-      command: ./gradlew androidDependencies
+      command: |
+        chmod +x ./gradlew
+        ./gradlew androidDependencies
 
 
   generate_test_coverage:
