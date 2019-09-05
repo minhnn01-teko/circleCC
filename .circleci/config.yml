@@ -71,9 +71,8 @@ jobs:
       - run:
           name: Upload to Code Climate
           command: |
-            JACOCO_SOURCE_PATH=app/build/reports/jacoco/jacocoTestReport ./cc-test-reporter \
-              format-coverage target/site/jacoco/jacocoTestReport.xml     \
-              --input-type jacoco
+            export JACOCO_SOURCE_PATH=app/build/reports/jacoco/jacocoTestReport
+            ./cc-test-reporter format-coverage app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml -t jacoco
             ./cc-test-reporter upload-coverage
 
 workflows:
