@@ -87,7 +87,7 @@ task jacocoTestReport(type: JacocoReport,
                       '**/*Lazy*.**',
     ]
     //Dagger2 generated code
-    def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/developDebug", excludes: fileFilter)
+    def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "${project.projectDir}/src/main/java"
     sourceDirectories.from = files([mainSrc])
     classDirectories.from = files([debugTree])
